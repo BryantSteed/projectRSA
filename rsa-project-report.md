@@ -4,6 +4,8 @@
 
 ### Design Experience
 
+I met with Duncan Lewis to discuss my design on 9/19/2025
+
 Summary: For the mathematical functions of RSA, my design is to implement ModExp based on the psuedocode found in the textbook. With the fermat primality testing, I will use the Fermat's little theorem psuedocode but only try values of a up to some integer k. This will of course be implemented by calling modexp. For prime number generation, I will simply generate a ranodm number within the specific bit range using pythons built in random library. Then, I will test those random number on the primality test until I find one that is prime.
 
 ### Theoretical Analysis - Prime Number Generation
