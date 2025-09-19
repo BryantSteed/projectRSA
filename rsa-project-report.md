@@ -165,7 +165,7 @@ Summary: I will implement the Miller-Rabin test by simply taking the number N in
 
 1. The test will take a^N-1 mod N, if it's not 1 or N-1, it returns false
 2. The test will do a secuence of square roots on a^N-1, which really is just a^ (N-1) / 2 and perform step 1 again
-3. Do the test for k random values of a, if it passed all a values, then return treu
+3. Do the test for k random values of a, if it passed all a values, then return true
 
 ### Discussion: Probabilistic Natures of Fermat and Miller Rabin 
 
