@@ -32,7 +32,25 @@ def miller_rabin(N: int, k: int) -> bool:
     """
     Returns True if N is prime
     """
-    return False
+    assert N > 2
+    if N % 2 == 0:
+        return False
+    for i in range(k):
+        a = random.randint(2, N-1)
+        first_res = mod_exp(a, N-1, N)
+        if first_res != 1:
+            return False
+        exp = N - 1
+        while True:
+            if exp % 2 != 0:
+                break
+            exp = exp // 2
+            res = mod_exp(a, exp, N)
+            if res == N - 1:
+                break
+            if res != 1:
+                return False
+    return True
 
 
 def generate_large_prime(n_bits: int) -> int:
