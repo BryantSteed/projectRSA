@@ -4,7 +4,7 @@
 
 ### Design Experience
 
-I met with Duncan Lewis to discuss my design on 9/19/2025
+I met with Duncan Lewis to discuss my all my designs on 9/19/2025
 
 Summary: For the mathematical functions of RSA, my design is to implement ModExp based on the psuedocode found in the textbook. With the fermat primality testing, I will use the Fermat's little theorem psuedocode but only try values of a up to some integer k. This will of course be implemented by calling modexp. For prime number generation, I will simply generate a ranodm number within the specific bit range using pythons built in random library. Then, I will test those random number on the primality test until I find one that is prime.
 
@@ -43,6 +43,8 @@ Summary: For the mathematical functions of RSA, my design is to implement ModExp
 ## Core
 
 ### Design Experience
+
+I met with Duncan Lewis to discuss my all my designs on 9/19/2025
 
 Summary: To implement the extended euclids algorithm, I will simply implant the psuedocode into real code. However, I will also make heavy use of my modexp function.
 
@@ -88,6 +90,8 @@ For public and private key generation I will to the following in order:
 ## Stretch 1
 
 ### Design Experience
+
+I met with Duncan Lewis to discuss my all my designs on 9/19/2025
 
 Summary: I will use the generate key pair function developed previously to generate the pair.
 
@@ -162,6 +166,8 @@ For the emperical analysis, I will track the time using python's time library. I
 ## Stretch 2
 
 ### Design Experience
+
+I met with Duncan Lewis to discuss my all my designs on 9/19/2025
 
 Summary: I will implement the Miller-Rabin test by simply taking the number N in question and performing the test k times for a randomly generated a such that 1 < a < N. If the test fails for any value of a, it will return false, but if it passes for all k values of a, it will return true.
 
