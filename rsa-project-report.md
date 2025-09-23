@@ -10,7 +10,9 @@ Summary: For the mathematical functions of RSA, my design is to implement ModExp
 
 ### Theoretical Analysis - Prime Number Generation
 
-#### Time - generate_large_prime - **O(n^4)**
+#### Time 
+
+##### generate_large_prime - **O(n^4)**
 
 
 ```py
@@ -57,7 +59,9 @@ In modexp, the call stack is approximately n calls deep because it bit-shifts y 
 
 Putting everything together we get O(20kn^4 + 20kn^3). Constants are dropped and higher order polynomial dominates lower, so my final analysis is **O(n^4)**
 
-#### Space - generate_large_prime - **O(n^2)**
+#### Space
+
+##### generate_large_prime - **O(n^2)**
 
 ```py
 def generate_large_prime(n_bits: int) -> int:
@@ -151,7 +155,9 @@ For public and private key generation I will to the following in order:
 
 ### Theoretical Analysis - Key Pair Generation
 
-#### Time - generate_key_pairs - **O(n^4)**
+#### Time
+
+##### generate_key_pairs - **O(n^4)**
 
 ```py
 def generate_key_pairs(n_bits) -> tuple[int, int, int]:
@@ -197,6 +203,8 @@ In extended euclid, our initial call has a= phi (potentially 2n-bit) and b = the
 Putting these together O(n^4 + 2n^2 + 24(n^2)). Dropping the constants and using polynomial domination rules puts my final prediction at **O(n^4)** for key pair generation. I predict that prime number generation still remains the highest order time complexity in the processs.
 
 #### Space
+
+##### generate_key_pairs - **O(n^2)**
 
 ```py
 def generate_key_pairs(n_bits) -> tuple[int, int, int]:
@@ -299,14 +307,13 @@ For the emperical analysis, I will track the time using python's time library. I
 
 ### Theoretical Analysis - Encrypt and Decrypt
 
-#### Time - encrypt O(n^2) - decrypt O(n^3)
+#### Time - 
+
+##### encrypt - O(n^2)
 
 ```py
 # Encrypt the message
 ciphertext = mod_exp(message, e, N)
-
-# Decrypt the message
-decrypted_message = mod_exp(ciphertext, d, N)
 ```
 
 All this does is use modexp. As you can see in my time theoretical for modexp. I predicted that modexp was approximately O(n^3) when y and n are n-bits. 
@@ -326,10 +333,18 @@ However, when encrypting, e, negligible is size beucase it just goes up to 97, i
 
 However, because z can be up to n-bits (because you mod N on lines 6 and 7), the multiplication is still O(n^2), making encryption **O(n^2)**
 
-When decrypting, the private key, d, actually is n-bits (see my analysis on euclids for core), which means that in that case, the call stack would actually be n deep, making decryption **O(n^3)** because of the O(n^2) multiplication.
+##### decrypt - O(n^3)
 
-#### Space - encrypt O(n) - decrypt O(n^2)
+```py
+# Decrypt the message
+decrypted_message = mod_exp(ciphertext, d, N)
+```
 
+There's only one differnce here. When decrypting, the private key, d, actually is n-bits (see my analysis on euclids for core), which means that in that case, the call stack would actually be n deep, making decryption **O(n^3)** because of the O(n^2) multiplication.
+
+#### Space
+
+##### encrypt O(n)
 ```py
 def mod_exp(x: int, y: int, N: int) -> int:
     if y == 0:
@@ -350,6 +365,8 @@ decrypted_message = mod_exp(ciphertext, d, N)
 For encrypttion, as mentioned previously, the call stack is an arbitrary k deep, which makes it irrelevant in terms of Big O. Om line 1, we see that the call makes you store an arbitary constant m for the message x, a negligible y (becaause its e), and the n-bit integer N. O(n).
 
 We also store a potenially n-bit integer z, (line 3), making this O(2n) or O(n). So space complexity for encryption is **O(n)**.
+
+##### decrypt O(n^2)
 
 For decryption, the call stack is n deep as previously mentioned, making this call space complexity the same as the modexp calculation for generating prime numbers. We get O(n) for n deep and O(2n) for storing y (technically about n/2) and N at each call to make O(n * 2n) = O(2n^2) = O(n^2). So, space complexity for decryption is **O(n^2)**
 
@@ -396,7 +413,7 @@ Here you see that it matches up perfectly with the logn growth order. As far as 
 
 The main thing that I think is that multiplication may not actually be emperically O(n^2) for the size of integers that I was using. I feel like somewhere under the hood, something is being done to make multiplication faster because if I were to just have a function that multiplies, it should have at least been O(n^2).
 
-Despite all that, we still get O(logn) for encryption emperically.
+Despite all that, we still get **O(logn)** for encryption emperically.
 
 #### Decryption
 
