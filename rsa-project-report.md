@@ -247,23 +247,41 @@ To calculate the total space complexity we take O(n^2 + 6n + 4n + 4n) = O(n^2). 
 
 | N    | time (ms) |
 |------|-----------|
-| 64   |           |
-| 128  |           |
-| 256  |           |
-| 512  |           |
-| 1024 |           |
-| 2048 |           |
+| 64   |  4.6821   |
+| 128  | 25.762    |
+| 256  |   53.090  |
+| 512  |  234.22   |
+| 1024 |  31043    |
+| 2048 |  213340   |
 
 ### Comparison of Theoretical and Empirical Results
 
-- Theoretical order of growth: *copy from section above* 
-- Measured constant of proportionality for theoretical order: 
-- Empirical order of growth (if different from theoretical): 
-- Measured constant of proportionality for empirical order: 
+- Theoretical order of growth: **O(n^4)**
+- Measured constant of proportionality for theoretical order: 7.18626906755435e-08
+- Empirical order of growth (if different from theoretical): **O(n^3 logn)**
+- Measured constant of proportionality for empirical order: 1.7450203770498989e-06
 
-![img](img.png)
+![img](keygen_complexity_5orders.png)
 
-*Fill me in*
+As you can see here, my theoretical O(n^4) was clearly outpacing my observed data. It was leaving everything in the dust!
+
+![img](keygen_complexity_4orders.png)
+
+A closer look here shows that clearly O(n^3 logn) got the closest to my observed and was by far the closest representation.
+
+![img](keygen_o4_constants.png)
+
+The constant of proportionaity spread among all constants of O(n^4) were not uniform at all
+
+![img](keygen_o3logn_constants.png)
+
+The constant spread for O(n^3 log n) was much more uniform and was the best among all orders tested.
+
+I think that my theoretical of O(n^4) was different so much from my observed O(n^3 logn) becuase I simply had gotten the prime number generation so wrong. Because the prime number generation turned out to be only O(n^3), it drastically changed my estimate for this.
+
+In effect, I think that generating the keys were simply O(n^3) plus some additional overhead per prime, which happened to be logn. I'm unsure as to why to why this overhead actually made a different becuase in the theoretical for euclid, I calculated O(n^2) for that. In a perfect world, we would simply get O(n^3 + n^2) = O(n^3). 
+
+And yet, there was still an extra logn of operations happening. I think that this could be due to noise in the data and also the fact that most of the time was taken up by the prime number generation. There could have been variability within the prime number generation too.
 
 ## Stretch 1
 
