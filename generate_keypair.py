@@ -59,7 +59,7 @@ def gen_ed(phi: int) -> tuple[int,int]:
 def extended_euclid(a: int, b: int) -> tuple[int, int, int]:
     assert a > b
     if b == 0:
-        return 1, 0, a
+        return 1, 0, a 
     x, y, z = extended_euclid(b, a % b)
     return y, x - ((a // b) * y), z
 

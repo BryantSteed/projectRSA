@@ -10,13 +10,99 @@ Summary: For the mathematical functions of RSA, my design is to implement ModExp
 
 ### Theoretical Analysis - Prime Number Generation
 
-#### Time 
+#### Time - generate_large_prime - **O(n^4)**
 
-*Fill me in*
 
-#### Space
+```py
+def generate_large_prime(n_bits: int) -> int:
+    """Generate a random prime number with the specified bit length"""
+    # https://xkcd.com/221/
+    while True:
+        prospect = random.getrandbits(n_bits)
+        if fermat(prospect, 20):
+            return prospect
+```
 
-*Fill me in*
+First line there is generating the random number. For generating the prime numbers. Generating a random number n-bit number (first line) to test it is largely O(n) linear becaues I think you would need to choose a random 0 or 1 for each bit. You need to do this an arbitrary about of time, so I'll attach a constant O(k * n). 
+
+```py
+def fermat(N: int, k: int) -> bool:
+    """
+    Returns True if N is prime
+    """
+    assert N > 2
+    for i in range(k):
+        a = random.randint(2, N-1)
+        result = mod_exp(a, N-1, N)
+        if result != 1:
+            return False
+    return True
+```
+
+Then, we have the primality testing. Look at the second line, for me its 20 fermat tests per candidate. O(K * n * 20). Each invividual fermat test has one call to modexp (fourth line). 
+
+```py
+def mod_exp(x: int, y: int, N: int) -> int:
+    if y == 0:
+        return 1
+    z = mod_exp(x, y // 2, N)
+    y_is_even = y % 2 == 0
+    if y_is_even:
+        return (z * z) % N
+    return (x * z * z) % N
+```
+
+
+In modexp, the call stack is approximately n calls deep because it bit-shifts y each time (line 4). Each call on the stack contains a bitshift (from the integer division), which I estimate is on average O(n) to shift n bits, and at least 1 call to n * n multiplication (line 6 and 7), which I estimate to be O(n^2). This makes modexp O((n^2 + n)n) or O(n^3 + n^2). 
+
+Putting everything together we get O(20kn^4 + 20kn^3). Constants are dropped and higher order polynomial dominates lower, so my final analysis is **O(n^4)**
+
+#### Space - generate_large_prime - **O(n^4)**
+
+```py
+def generate_large_prime(n_bits: int) -> int:
+    """Generate a random prime number with the specified bit length"""
+    # https://xkcd.com/221/
+    while True:
+        prospect = random.getrandbits(n_bits)
+        if fermat(prospect, 20):
+            return prospect
+```
+
+For memory, the generate primes function will have at most n bits of data for a single candidate primes O(n) because each candidate prime gets garbage collected after it fails the test. Integers are passed by reference so the space won't be doubled from the function call to fermat (aside from the pointer space overhead of course).
+
+```py
+def fermat(N: int, k: int) -> bool:
+    """
+    Returns True if N is prime
+    """
+    assert N > 2
+    for i in range(k):
+        a = random.randint(2, N-1)
+        result = mod_exp(a, N-1, N)
+        if result != 1:
+            return False
+    return True
+```
+
+For each of k iterations of the fermat test for a given prime, the same is also true, all the space of that test for a given call will be garbage collected through the for loop. For that reason, we only need to consider how much memory is being used by a single n-bit integer for one a value of the fermat test.
+
+In a given iteration in the for loop of the fermat test, you store the a value, which could be n bits, and an N - 1 value, so O(3n) so far. Remember that the passing by reference still applies here.
+
+```py
+def mod_exp(x: int, y: int, N: int) -> int:
+    if y == 0:
+        return 1
+    z = mod_exp(x, y // 2, N)
+    y_is_even = y % 2 == 0
+    if y_is_even:
+        return (z * z) % N
+    return (x * z * z) % N
+```
+
+For modexp, the stack in n deep. Each call contains 3 integers that are n-bits large, but technically the y bit length decreases by one each time (line 3), which creates a triangular structure storing half the normal space that it would. So, effectively, y accounts for O(n * n/2) space. And x and n are both simply (n^2) because they dont change with each stack. For all three we get O(n^2 + n^2 / 2).
+
+When we drop the contants there, we get **O(n^2)** space complexity.
 
 ### Empirical Data
 
@@ -57,13 +143,97 @@ For public and private key generation I will to the following in order:
 
 ### Theoretical Analysis - Key Pair Generation
 
-#### Time 
+#### Time - generate_key_pairs - **O(n^4)**
 
-*Fill me in*
+```py
+def generate_key_pairs(n_bits) -> tuple[int, int, int]:
+    """
+    Generate RSA public and private key pairs.
+    Randomly creates a p and q (two large n-bit primes)
+    Computes N = p*q
+    Computes e and d such that e*d = 1 mod (p-1)(q-1)
+    Return N, e, and d
+    """
+    p = generate_large_prime(n_bits)
+    q = generate_large_prime(n_bits)
+    N = p * q
+    phi = (p-1) * (q-1)
+    e, d = gen_ed(phi)
+    return N, e, d
+```
+
+As stated previously I have estimated prime number generation to be O(n^4). Calculating N and phi are together simply O(2n^2) assuming quadratic complexity for multiplication (line 4 and 5). Finding d and e means calling extended euclid at most 24 times (the lengths of the prime number generation.)
+
+```py
+def gen_ed(phi: int) -> tuple[int,int]:
+    for pros_e in primes:
+        x, y, z = extended_euclid(phi, pros_e)
+        if z == 1:
+            return pros_e, y % phi
+    raise RuntimeError("Didnt have enough primes")
+```
+
+All that gen_ed does it call extended euclid as many times as it takes to find an e relatively prime to phi. Its addition to the complexity is simply an arbitary constant k that it takes to find it. Extended Euclid is the real thing to consider
+
+```py
+def extended_euclid(a: int, b: int) -> tuple[int, int, int]:
+    assert a > b
+    if b == 0:
+        return 1, 0, a 
+    x, y, z = extended_euclid(b, a % b)
+    return y, x - ((a // b) * y), z
+```
+
+In extended euclid, our initial call has a= phi (potentially 2n-bit) and b = the prospective e (negligible bit). The next recursive call will see the next a = prospective e > b! because of line 4 a % b. This means that it has drastically reduced the size of phi to less than e! This also means that the size of the call stack isn't necessarily a function of n because even if n were so large, the next call would still be guarenteed to make it be less than the prospective e. We can then generalize the length of the call stack to be that of an arbitrary constant k (depending on which prospective e which got). Each call contains subtracting O(n), floor integer division O(n^2), and multiplication O(n^2) on line 5. This gives us O(2n^2 + n) per call and O(k(2n^2 + n)) = O(n^2) for euclids algorithm.
+
+Putting these together O(n^4 + 2n^2 + 24(n^2)). Dropping the constants and using polynomial domination rules puts my final prediction at **O(n^4)** for key pair generation. I predict that prime number generation still remains the highest order time complexity in the processs.
 
 #### Space
 
-*Fill me in*
+```py
+def generate_key_pairs(n_bits) -> tuple[int, int, int]:
+    """
+    Generate RSA public and private key pairs.
+    Randomly creates a p and q (two large n-bit primes)
+    Computes N = p*q
+    Computes e and d such that e*d = 1 mod (p-1)(q-1)
+    Return N, e, and d
+    """
+    p = generate_large_prime(n_bits)
+    q = generate_large_prime(n_bits)
+    N = p * q
+    phi = (p-1) * (q-1)
+    e, d = gen_ed(phi)
+    return N, e, d
+```
+
+My estimate for prime number generation space was O(n^2). N and Phi take up at most (becuase there both two n-bits multiplied together) 2n each so O(4n) for both. e itself is negligible in space, but finding requires calling extended euclid which is an aribtrary constant guarenteed. d is also about 2n at the max because its multiplied by y to get phi (remember that Ax + By = z). It's fair to say that the instance of this function is about (6n)
+
+```py
+def gen_ed(phi: int) -> tuple[int,int]:
+    for pros_e in primes:
+        x, y, z = extended_euclid(phi, pros_e)
+        if z == 1:
+            return pros_e, y % phi
+    raise RuntimeError("Didnt have enough primes")
+```
+
+gen_ed has a phi (2n) passed by reference, x is a small number,  neglibible in size (Ax + By = z = 1), but y is about 2n becuase its comparable to the size of phi. This fucntion would then take about O(4n) space
+
+```py
+def extended_euclid(a: int, b: int) -> tuple[int, int, int]:
+    assert a > b
+    if b == 0:
+        return 1, 0, a 
+    x, y, z = extended_euclid(b, a % b)
+    return y, x - ((a // b) * y), z
+```
+
+Remember from my time complexity that the call stack here is that of some arbitray constant (it doesnt scale with n). This means we can treat the initial call as the space complexity. The value a gives us 2n because its phi; b is negligible because its e. a % b is also negligible because its less than e.
+
+The value x would be comparable to e because (Ax + By = c = 1). The value y would be comparable to phi for the same reason (2n). Remember that z = 1 (or likely close to it if e isnt relatively prime to phi), so its negligible. That leaves us with O(4n) for this part.
+
+To calculate the total space complexity we take O(n^2 + 6n + 4n + 4n) = O(n^2). So, **O(n^2)** is my final prediction.
 
 ### Empirical Data
 
