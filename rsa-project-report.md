@@ -53,11 +53,11 @@ def mod_exp(x: int, y: int, N: int) -> int:
 ```
 
 
-In modexp, the call stack is approximately n calls deep because it bit-shifts y each time (line 4). Each call on the stack contains a bitshift (from the integer division), which I estimate is on average O(n) to shift n bits, and at least 1 call to n * n multiplication (line 6 and 7), which I estimate to be O(n^2). This makes modexp O((n^2 + n)n) or O(n^3 + n^2). 
+In modexp, the call stack is approximately n calls deep because it bit-shifts y each time (line 4). Each call on the stack contains a bitshift (from the integer division), which I estimate is on average O(n) to shift n bits, and at least 1 call to n * n multiplication (line 6 and 7), which I estimate to be O(n^2). This makes modexp O((n^2 + n)n) or O(n^3 + n^2) or O(n^3). 
 
 Putting everything together we get O(20kn^4 + 20kn^3). Constants are dropped and higher order polynomial dominates lower, so my final analysis is **O(n^4)**
 
-#### Space - generate_large_prime - **O(n^4)**
+#### Space - generate_large_prime - **O(n^2)**
 
 ```py
 def generate_large_prime(n_bits: int) -> int:
@@ -273,13 +273,59 @@ For the emperical analysis, I will track the time using python's time library. I
 
 ### Theoretical Analysis - Encrypt and Decrypt
 
-#### Time 
+#### Time - encrypt O(n^2) - decrypt O(n^3)
 
-*Fill me in*
+```py
+# Encrypt the message
+ciphertext = mod_exp(message, e, N)
 
-#### Space
+# Decrypt the message
+decrypted_message = mod_exp(ciphertext, d, N)
+```
 
-*Fill me in*
+All this does is use modexp. As you can see in my time theoretical for modexp. I predicted that modexp was approximately O(n^3) when y and n are n-bits. 
+
+```py
+def mod_exp(x: int, y: int, N: int) -> int:
+    if y == 0:
+        return 1
+    z = mod_exp(x, y // 2, N)
+    y_is_even = y % 2 == 0
+    if y_is_even:
+        return (z * z) % N
+    return (x * z * z) % N
+```
+
+However, when encrypting, e, negligible is size beucase it just goes up to 97, is the exponent used. This means that when encrypting, the call stack isn't necessary n deep becuase y in this case is not an n-bit integer. For that reason, for encryption, the call stack should actually be that of an arbitrary constant k (depending on e) deep.
+
+However, because z can be up to n-bits (because you mod N on lines 6 and 7), the multiplication is still O(n^2), making encryption **O(n^2)**
+
+When decrypting, the private key, d, actually is n-bits (see my analysis on euclids for core), which means that in that case, the call stack would actually be n deep, making decryption **O(n^3)** because of the O(n^2) multiplication.
+
+#### Space - encrypt O(n) - decrypt O(n^2)
+
+```py
+def mod_exp(x: int, y: int, N: int) -> int:
+    if y == 0:
+        return 1
+    z = mod_exp(x, y // 2, N)
+    y_is_even = y % 2 == 0
+    if y_is_even:
+        return (z * z) % N
+    return (x * z * z) % N
+
+# Encrypt the message
+ciphertext = mod_exp(message, e, N)
+
+# Decrypt the message
+decrypted_message = mod_exp(ciphertext, d, N)
+```
+
+For encrypttion, as mentioned previously, the call stack is an arbitrary k deep, which makes it irrelevant in terms of Big O. Om line 1, we see that the call makes you store an arbitary constant m for the message x, a negligible y (becaause its e), and the n-bit integer N. O(n).
+
+We also store a potenially n-bit integer z, (line 3), making this O(2n) or O(n). So space complexity for encryption is **O(n)**.
+
+For decryption, the call stack is n deep as previously mentioned, making this call space complexity the same as the modexp calculation for generating prime numbers. We get O(n) for n deep and O(2n) for storing y (technically about n/2) and N at each call to make O(n * 2n) = O(2n^2) = O(n^2). So, space complexity for decryption is **O(n^2)**
 
 ### Empirical Data
 
@@ -347,7 +393,17 @@ Summary: I will implement the Miller-Rabin test by simply taking the number N in
 
 ### Discussion: Probabilistic Natures of Fermat and Miller Rabin 
 
-*Fill me in*
+Remember that only false postiives are at play here becuase they cant give false negatives. If the number truly is prime, they will always return true.
+
+For Fermat, becuase its implemented assuming primality, which means that all 2 to N-1 would be coprime to N, it samples randomly. This means that for Carmichael numbers like 561, they are not guarented to pass that implementation of the fermat because the function is not always guarenteed to pick numbers that are coprime to it.
+
+We then need to examine what the odds are that no coprimes are chosen for the sample size k = 20. A quick search reveals that 320 numbers that are less than 561 are coprime to it. The probability of selecting a random noncoprime number is then 320 / 560 = .57. This means that there is a .57 chance that the sample selects a number that is not guarenteed to pass. Of course that doesn't necessarily mean it can't pass either.
+
+I ran a test on the probability that either tests would falsely say that the carmichael number 561 was a prime number. At k = 20, it took the fermat test 181238 trials before it claimed that it was a prime number. That's pretty good, but still probably too high considering how many secure credit card transactions are taking place on the internet every day. 
+
+As for the Miller-Rabin test, I had it going for a while and I convinced myself that it would take an astronnomically long time for it to fool the test. Its a lot better.
+
+My testing was also proven correct by the math itself. Aside from carmichaels, remember that for fermat, there is a .5 chance with k=1 that a number is actually prime, with k = 20 your probabiltiy of it being composite 1/2^20, which is a small big number. But will miller rabin, its 1/4^20 becuase they proved that with composites, the successive squaring wont pass the test for at least 3/4 of the values of a. That is extremely significant.
 
 ## Project Review
 
