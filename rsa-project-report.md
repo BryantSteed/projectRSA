@@ -359,47 +359,63 @@ For decryption, the call stack is n deep as previously mentioned, making this ca
 
 | N    | time (ms) |
 |------|-----------|
-| 64   |           |
-| 128  |           |
-| 256  |           |
-| 512  |           |
-| 1024 |           |
-| 2048 |           |
+| 64   | 0.0033    |
+| 128  |  0.0033   |
+| 256  |   0.0038  |
+| 512  |  0.00359  |
+| 1024 |   0.00350 |
+| 2048 |    0.0061 |
 
 #### Decryption
 
 | N    | time (ms) |
 |------|-----------|
-| 64   |           |
-| 128  |           |
-| 256  |           |
-| 512  |           |
-| 1024 |           |
-| 2048 |           |
+| 64   |    0.3037 |
+| 128  | 0.17980   |
+| 256  |  1.2666   |
+| 512  |   3.8860  |
+| 1024 |     27.827|
+| 2048 |   332.84  |
 
 ### Comparison of Theoretical and Empirical Results
 
 #### Encryption
 
-- Theoretical order of growth: *copy from section above* 
-- Measured constant of proportionality for theoretical order: 
-- Empirical order of growth (if different from theoretical): 
-- Measured constant of proportionality for empirical order: 
+- Theoretical order of growth: **O(n^2)**
+- Measured constant of proportionality for theoretical order: 1.8059940117461556e-07
+- Empirical order of growth (if different from theoretical): **O(logn)**
+- Measured constant of proportionality for empirical order: 0.0004668304031560696
 
-![img](img.png)
+![img](en_log_constants.png)
 
-*Fill me in*
+As you can see here, the log n constant of proportionality spread nearly perfectly matched for encryption. This was not the case for what I had estimated, which was linear.
+
+![img](en_complexity.png)
+
+Here you see that it matches up perfectly with the logn growth order. As far as why this empiral O(logn) doesn't match my theoretical of O(n^2), I can think of a main scenarios:
+
+The main thing that I think is that multiplication may not actually be emperically O(n^2) for the size of integers that I was using. I feel like somewhere under the hood, something is being done to make multiplication faster because if I were to just have a function that multiplies, it should have at least been O(n^2).
+
+Despite all that, we still get O(logn) for encryption emperically.
 
 #### Decryption
 
-- Theoretical order of growth: *copy from section above* 
-- Measured constant of proportionality for theoretical order: 
-- Empirical order of growth (if different from theoretical): 
-- Measured constant of proportionality for empirical order: 
+- Theoretical order of growth: *copy from section above* **O(n^3)**
+- Measured constant of proportionality for theoretical order: 2.3556309660321354e-07
+- Empirical order of growth (if different from theoretical): **O(n^2)**
+- Measured constant of proportionality for empirical order: 3.75279436507873e-05
 
-![img](img.png)
+![img](de_quad_constants.png)
 
-*Fill me in*
+This is the constant spread for quadratic time complexity. It's not the most unform, but it was a lot more uniform than all the other order, especially my theoretical O(n^3)
+
+![img](de_complexity.png)
+
+As you can see, the emperical curve here most follows that of the quadratic time complexity, although for some odd reason the last datapoint seemed to spike out a lot more. Despite that, its order of growth was no where near cubic, so quadratic O(n^2) is its real order.
+
+Of course my prediciton that the call stack length would make the order of decryption higher than that of encryption was correct, but my overall was not.
+
+This is a whole order of magnitude lower than my theoretical of O(n^3). My main explanation for it is similar to my explanantion of how I undershot the order for encryption. I think that something under the hood is making the processor perfrom multiplication a lot faster. This seems to be the only explanantion that could make sense because its the highest theoretical order operation being performed in modexp.
 
 ### Encrypting and Decrypting With A Classmate
 
