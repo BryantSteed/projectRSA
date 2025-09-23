@@ -108,23 +108,31 @@ When we drop the contants there, we get **O(n^2)** space complexity.
 
 | N    | time (ms) |
 |------|-----------|
-| 64   |           |
-| 128  |           |
-| 256  |           |
-| 512  |           |
-| 1024 |           |
-| 2048 |           |
+| 64   |1.7205     |
+| 128  |   18.9050 |
+| 256  | 28.8964   |
+| 512  |   416.090 |
+| 1024 |  3235.74  |
+| 2048 |  77085.2  |
 
 ### Comparison of Theoretical and Empirical Results
 
-- Theoretical order of growth: *copy from section above* 
-- Measured constant of proportionality for theoretical order: 
-- Empirical order of growth (if different from theoretical): 
-- Measured constant of proportionality for empirical order: 
+- Theoretical order of growth: **O(n^4)**
+- Measured constant of proportionality for theoretical order: 3.218171623153566e-08
+- Empirical order of growth (if different from theoretical): **O(n^3)**
+- Measured constant of proportionality for empirical order: 5.398020639938191e-06
 
-![img](img.png)
+![img](prime_gen_order_1-3_time.png)
 
-*Fill me in*
+As you can see in this plot of emperical data, O(n^4) is clearly not the correct growth order for generating prime numbers. Another plot of this would show that O(n^4) was completely out of bounds such that you couldn't even see the observed line!
+
+Instead, it appears that the observed is somewhere in between O(n^2) and O(n^3), 
+
+![img](prime_gen_o(n^3)_contant_plot.png)
+
+But because the constant distribution for O(n^3) is so much more evenly spread than O(n^2), its fair to say that O(n^3) best mirrors this order of growth. Also, from the graph it appears that the observed is leaving O(n^2) rapidly.
+
+My observed O(n^3) differs from my theoretical (n^4) by literally an order of magnitude! One reason why that might be the case is performance optimizations in the processor that make doing a 64-bit bitshift actually an O(1) operation. This would make it so that division by 2 actually wouldn't be linear, it would be constant. There are potentially other explanations, but another reason why they might differ is because the arithmetic of division and multiplication may not have exactly been O(n^2) under the hood.
 
 ## Core
 
