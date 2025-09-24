@@ -436,7 +436,10 @@ This is a whole order of magnitude lower than my theoretical of O(n^3). My main 
 
 ### Encrypting and Decrypting With A Classmate
 
-*Fill me in*
+I did the encrypting decryping with Cecily Black. I sent her the message "Hello, How's it going?" and it worked for her to decrypt it. She sent me the message "Hello There!
+General Kenobi!" It also worked for me to decrypt it with my private key.
+
+The one challenge that we had to overcome was us putting in the wrong arguments in the command line. That was tough but we solved it by figuring out what to supply as arguments.
 
 ## Stretch 2
 
@@ -466,5 +469,12 @@ My testing was also proven correct by the math itself. Aside from carmichaels, r
 
 ## Project Review
 
-*Fill me in*
+I did the project review with Cecily Black. Here emperical data for generating primes was also pretty similar in the sense that the last call to a 2048 bit integer took like a full minute and a half to compute. We had both implemented all the project tiers.
 
+Her Emperical data pretty much cemented that they were likely the real time complexities for these algorithms becuase they aligned with mine.
+
+We also talked about different ways on implementing fermat's theorem. She was using a bitwise OR operator to use it to flip the bits on a number to make sure it was always an odd number. I'd never thought about using that before. 
+
+We also discussed different performance optimizations such as breaking out of a for loop when you've already found that a number is prime.
+
+All in all, this project has helped me learn about the encryption ecosystem and how it works. It's interesting how we've been able to use computation speed to make a very secure system of data transfer.
