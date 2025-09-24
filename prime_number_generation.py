@@ -37,19 +37,28 @@ def miller_rabin(N: int, k: int) -> bool:
         return False
     for i in range(k):
         a = random.randint(2, N-1)
-        first_res = mod_exp(a, N-1, N)
-        if first_res != 1:
+        if not (passes_first_test(N, a) and passes_sqrt_test(N, a)):
             return False
-        exp = N - 1
-        while True:
-            if exp % 2 != 0:
-                break
-            exp = exp // 2
-            res = mod_exp(a, exp, N)
-            if res == N - 1:
-                break
-            if res != 1:
-                return False
+    return True
+
+def passes_sqrt_test(N: int, a: int) -> bool:
+    exp = N - 1
+    while True:
+        if exp % 2 != 0:
+            break
+        exp = exp // 2
+        res = mod_exp(a, exp, N)
+        if res == N - 1:
+            break
+        if res != 1:
+            return False
+    return True
+
+
+def passes_first_test(N: int, a: int) -> bool:
+    first_res = mod_exp(a, N-1, N)
+    if first_res != 1:
+        return False
     return True
 
 
