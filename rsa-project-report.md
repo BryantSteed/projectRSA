@@ -4,9 +4,9 @@
 
 ### Design Experience
 
-I met with Duncan Lewis to discuss my all my designs on 9/19/2025
+I met with Duncan Lewis to discuss my all my designs on 9/19/2025.
 
-Summary: For the mathematical functions of RSA, my design is to implement ModExp based on the psuedocode found in the textbook. With the fermat primality testing, I will use the Fermat's little theorem psuedocode but only try values of a up to some integer k. This will of course be implemented by calling modexp. For prime number generation, I will simply generate a ranodm number within the specific bit range using pythons built in random library. Then, I will test those random number on the primality test until I find one that is prime.
+Summary: For the mathematical functions of RSA, my design is to implement ModExp based on the psuedocode found in the textbook. With the fermat primality testing, I will use the Fermat's little theorem psuedocode but only try values of a up to some integer k. This will of course be implemented by calling modexp. For prime number generation, I will simply generate a random number within the specific bit range using pythons built in random library. Then, I will test those random number on the primality test until I find one that is prime.
 
 ### Theoretical Analysis - Prime Number Generation
 
@@ -128,7 +128,7 @@ When we drop the contants there, we get **O(n^2)** space complexity.
 
 ![img](prime_gen_order_1-3_time.png)
 
-As you can see in this plot of emperical data, O(n^4) is clearly not the correct growth order for generating prime numbers. Another plot of this would show that O(n^4) was completely out of bounds such that you couldn't even see the observed line!
+As you can see in this plot of empirical data, O(n^4) is clearly not the correct growth order for generating prime numbers. Another plot of this would show that O(n^4) was completely out of bounds such that you couldn't even see the observed line!
 
 Instead, it appears that the observed is somewhere in between O(n^2) and O(n^3), 
 
@@ -142,7 +142,7 @@ My observed O(n^3) differs from my theoretical (n^4) by literally an order of ma
 
 ### Design Experience
 
-I met with Duncan Lewis to discuss my all my designs on 9/19/2025
+I met with Duncan Lewis to discuss my all my designs on 9/19/2025.
 
 Summary: To implement the extended euclids algorithm, I will simply implant the psuedocode into real code. However, I will also make heavy use of my modexp function.
 
@@ -176,7 +176,7 @@ def generate_key_pairs(n_bits) -> tuple[int, int, int]:
     return N, e, d
 ```
 
-As stated previously I have estimated prime number generation to be O(n^4). Calculating N and phi are together simply O(2n^2) assuming quadratic complexity for multiplication (line 4 and 5). Finding d and e means calling extended euclid at most 24 times (the lengths of the prime number generation.)
+As stated previously I have estimated prime number generation to be O(n^4). Calculating N and phi are together simply O(2n^2) assuming quadratic complexity for multiplication (line 4 and 5). Finding d and e means calling extended euclid at most 24 times (the lengths of the prime number generation).
 
 ```py
 def gen_ed(phi: int) -> tuple[int,int]:
@@ -187,7 +187,7 @@ def gen_ed(phi: int) -> tuple[int,int]:
     raise RuntimeError("Didnt have enough primes")
 ```
 
-All that gen_ed does it call extended euclid as many times as it takes to find an e relatively prime to phi. Its addition to the complexity is simply an arbitary constant k that it takes to find it. Extended Euclid is the real thing to consider
+All that gen_ed does it call extended euclid as many times as it takes to find an e relatively prime to phi. Its addition to the complexity is simply an arbitary constant k that it takes to find it. Extended Euclid is the real thing to consider.
 
 ```py
 def extended_euclid(a: int, b: int) -> tuple[int, int, int]:
@@ -198,7 +198,7 @@ def extended_euclid(a: int, b: int) -> tuple[int, int, int]:
     return y, x - ((a // b) * y), z
 ```
 
-In extended euclid, our initial call has a= phi (potentially 2n-bit) and b = the prospective e (negligible bit). The next recursive call will see the next a = prospective e > b! because of line 4 a % b. This means that it has drastically reduced the size of phi to less than e! This also means that the size of the call stack isn't necessarily a function of n because even if n were so large, the next call would still be guarenteed to make it be less than the prospective e. We can then generalize the length of the call stack to be that of an arbitrary constant k (depending on which prospective e which got). Each call contains subtracting O(n), floor integer division O(n^2), and multiplication O(n^2) on line 5. This gives us O(2n^2 + n) per call and O(k(2n^2 + n)) = O(n^2) for euclids algorithm.
+In extended euclid, our initial call has a= phi (potentially 2n-bit) and b = the prospective e (negligible bit). The next recursive call will see the next a = prospective e > b! because of line 4 a % b. This means that it has drastically reduced the size of phi to less than e! This also means that the size of the call stack isn't necessarily a function of n because even if n were so large, the next call would still be guaranteed to make it be less than the prospective e. We can then generalize the length of the call stack to be that of an arbitrary constant k (depending on which prospective e which got). Each call contains subtracting O(n), floor integer division O(n^2), and multiplication O(n^2) on line 5. This gives us O(2n^2 + n) per call and O(k(2n^2 + n)) = O(n^2) for euclids algorithm.
 
 Putting these together O(n^4 + 2n^2 + 24(n^2)). Dropping the constants and using polynomial domination rules puts my final prediction at **O(n^4)** for key pair generation. I predict that prime number generation still remains the highest order time complexity in the processs.
 
@@ -223,7 +223,7 @@ def generate_key_pairs(n_bits) -> tuple[int, int, int]:
     return N, e, d
 ```
 
-My estimate for prime number generation space was O(n^2). N and Phi take up at most (becuase there both two n-bits multiplied together) 2n each so O(4n) for both. e itself is negligible in space, but finding requires calling extended euclid which is an aribtrary constant guarenteed. d is also about 2n at the max because its multiplied by y to get phi (remember that Ax + By = z). It's fair to say that the instance of this function is about (6n)
+My estimate for prime number generation space was O(n^2). N and Phi take up at most (because there both two n-bits multiplied together) 2n each so O(4n) for both. e itself is negligible in space, but finding requires calling extended euclid which is an arbitrary constant guaranteed. d is also about 2n at the max because its multiplied by y to get phi (remember that Ax + By = z). It's fair to say that the instance of this function is about (6n).
 
 ```py
 def gen_ed(phi: int) -> tuple[int,int]:
@@ -234,7 +234,7 @@ def gen_ed(phi: int) -> tuple[int,int]:
     raise RuntimeError("Didnt have enough primes")
 ```
 
-gen_ed has a phi (2n) passed by reference, x is a small number,  neglibible in size (Ax + By = z = 1), but y is about 2n becuase its comparable to the size of phi. This fucntion would then take about O(4n) space
+gen_ed has a phi (2n) passed by reference, x is a small number,  negligible in size (Ax + By = z = 1), but y is about 2n because its comparable to the size of phi. This fucntion would then take about O(4n) space.
 
 ```py
 def extended_euclid(a: int, b: int) -> tuple[int, int, int]:
@@ -279,15 +279,15 @@ A closer look here shows that clearly O(n^3 logn) got the closest to my observed
 
 ![img](keygen_o4_constants.png)
 
-The constant of proportionaity spread among all constants of O(n^4) were not uniform at all
+The constant of proportionality spread among all constants of O(n^4) were not uniform at all.
 
 ![img](keygen_o3logn_constants.png)
 
 The constant spread for O(n^3 log n) was much more uniform and was the best among all orders tested.
 
-I think that my theoretical of O(n^4) was different so much from my observed O(n^3 logn) becuase I simply had gotten the prime number generation so wrong. Because the prime number generation turned out to be only O(n^3), it drastically changed my estimate for this.
+I think that my theoretical of O(n^4) was different so much from my observed O(n^3 logn) because I simply had gotten the prime number generation so wrong. Because the prime number generation turned out to be only O(n^3), it drastically changed my estimate for this.
 
-In effect, I think that generating the keys were simply O(n^3) plus some additional overhead per prime, which happened to be logn. I'm unsure as to why to why this overhead actually made a different becuase in the theoretical for euclid, I calculated O(n^2) for that. In a perfect world, we would simply get O(n^3 + n^2) = O(n^3). 
+In effect, I think that generating the keys were simply O(n^3) plus some additional overhead per prime, which happened to be logn. I'm unsure as to why to why this overhead actually made a different because in the theoretical for euclid, I calculated O(n^2) for that. In a perfect world, we would simply get O(n^3 + n^2) = O(n^3). 
 
 And yet, there was still an extra logn of operations happening. I think that this could be due to noise in the data and also the fact that most of the time was taken up by the prime number generation. There could have been variability within the prime number generation too.
 
@@ -295,7 +295,7 @@ And yet, there was still an extra logn of operations happening. I think that thi
 
 ### Design Experience
 
-I met with Duncan Lewis to discuss my all my designs on 9/19/2025
+I met with Duncan Lewis to discuss my all my designs on 9/19/2025.
 
 Summary: I will use the generate key pair function developed previously to generate the pair.
 
@@ -303,7 +303,7 @@ To encrypt a message, the simple formula of message^e mod N = y encrypted messag
 
 To do my theoretical analysis. I will simply analyze each function and give my best theoretical calculation of the time complexity.
 
-For the emperical analysis, I will track the time using python's time library. I will use matplotlib to display the data and see if I can predict the order of growth f(x). I may do this for several orders of growth. After that, I will calcualte the constant of proportionality by simply diving the emperical value / function value. I will sum these constants and average them to get a constant of proportionality just as is shown in the instructions.
+For the empirical analysis, I will track the time using python's time library. I will use matplotlib to display the data and see if I can predict the order of growth f(x). I may do this for several orders of growth. After that, I will calculate the constant of proportionality by simply diving the empirical value / function value. I will sum these constants and average them to get a constant of proportionality just as is shown in the instructions.
 
 ### Theoretical Analysis - Encrypt and Decrypt
 
@@ -329,9 +329,9 @@ def mod_exp(x: int, y: int, N: int) -> int:
     return (x * z * z) % N
 ```
 
-However, when encrypting, e, negligible is size beucase it just goes up to 97, is the exponent used. This means that when encrypting, the call stack isn't necessary n deep becuase y in this case is not an n-bit integer. For that reason, for encryption, the call stack should actually be that of an arbitrary constant k (depending on e) deep.
+However, when encrypting, e, negligible is size beucase it just goes up to 97, is the exponent used. This means that when encrypting, the call stack isn't necessary n deep because y in this case is not an n-bit integer. For that reason, for encryption, the call stack should actually be that of an arbitrary constant k (depending on e) deep.
 
-However, because z can be up to n-bits (because you mod N on lines 6 and 7), the multiplication is still O(n^2), making encryption **O(n^2)**
+However, because z can be up to n-bits (because you mod N on lines 6 and 7), the multiplication is still O(n^2), making encryption **O(n^2)**.
 
 ##### decrypt - O(n^3)
 
@@ -340,7 +340,7 @@ However, because z can be up to n-bits (because you mod N on lines 6 and 7), the
 decrypted_message = mod_exp(ciphertext, d, N)
 ```
 
-There's only one differnce here. When decrypting, the private key, d, actually is n-bits (see my analysis on euclids for core), which means that in that case, the call stack would actually be n deep, making decryption **O(n^3)** because of the O(n^2) multiplication.
+There's only one difference here. When decrypting, the private key, d, actually is n-bits (see my analysis on euclids for core), which means that in that case, the call stack would actually be n deep, making decryption **O(n^3)** because of the O(n^2) multiplication.
 
 #### Space
 
@@ -368,7 +368,7 @@ We also store a potenially n-bit integer z, (line 3), making this O(2n) or O(n).
 
 ##### decrypt O(n^2)
 
-For decryption, the call stack is n deep as previously mentioned, making this call space complexity the same as the modexp calculation for generating prime numbers. We get O(n) for n deep and O(2n) for storing y (technically about n/2) and N at each call to make O(n * 2n) = O(2n^2) = O(n^2). So, space complexity for decryption is **O(n^2)**
+For decryption, the call stack is n deep as previously mentioned, making this call space complexity the same as the modexp calculation for generating prime numbers. We get O(n) for n deep and O(2n) for storing y (technically about n/2) and N at each call to make O(n * 2n) = O(2n^2) = O(n^2). So, space complexity for decryption is **O(n^2)**.
 
 ### Empirical Data
 
@@ -411,9 +411,9 @@ As you can see here, the log n constant of proportionality spread nearly perfect
 
 Here you see that it matches up perfectly with the logn growth order. As far as why this empiral O(logn) doesn't match my theoretical of O(n^2), I can think of a main scenarios:
 
-The main thing that I think is that multiplication may not actually be emperically O(n^2) for the size of integers that I was using. I feel like somewhere under the hood, something is being done to make multiplication faster because if I were to just have a function that multiplies, it should have at least been O(n^2).
+The main thing that I think is that multiplication may not actually be empirically O(n^2) for the size of integers that I was using. I feel like somewhere under the hood, something is being done to make multiplication faster because if I were to just have a function that multiplies, it should have at least been O(n^2).
 
-Despite all that, we still get **O(logn)** for encryption emperically.
+Despite all that, we still get **O(logn)** for encryption empirically.
 
 #### Decryption
 
@@ -424,11 +424,11 @@ Despite all that, we still get **O(logn)** for encryption emperically.
 
 ![img](de_quad_constants.png)
 
-This is the constant spread for quadratic time complexity. It's not the most unform, but it was a lot more uniform than all the other order, especially my theoretical O(n^3)
+This is the constant spread for quadratic time complexity. It's not the most unform, but it was a lot more uniform than all the other order, especially my theoretical O(n^3).
 
 ![img](de_complexity.png)
 
-As you can see, the emperical curve here most follows that of the quadratic time complexity, although for some odd reason the last datapoint seemed to spike out a lot more. Despite that, its order of growth was no where near cubic, so quadratic O(n^2) is its real order.
+As you can see, the empirical curve here most follows that of the quadratic time complexity, although for some odd reason the last datapoint seemed to spike out a lot more. Despite that, its order of growth was no where near cubic, so quadratic O(n^2) is its real order.
 
 Of course my prediciton that the call stack length would make the order of decryption higher than that of encryption was correct, but my overall was not.
 
@@ -445,33 +445,33 @@ The one challenge that we had to overcome was us putting in the wrong arguments 
 
 ### Design Experience
 
-I met with Duncan Lewis to discuss my all my designs on 9/19/2025
+I met with Duncan Lewis to discuss my all my designs on 9/19/2025.
 
 Summary: I will implement the Miller-Rabin test by simply taking the number N in question and performing the test k times for a randomly generated a such that 1 < a < N. If the test fails for any value of a, it will return false, but if it passes for all k values of a, it will return true.
 
 1. The test will take a^N-1 mod N, if it's not 1 or N-1, it returns false
-2. The test will do a secuence of square roots on a^N-1, which really is just a^ (N-1) / 2 and perform step 1 again
+2. The test will do a sequence of square roots on a^N-1, which really is just a^ (N-1) / 2 and perform step 1 again
 3. Do the test for k random values of a, if it passed all a values, then return true
 
 ### Discussion: Probabilistic Natures of Fermat and Miller Rabin 
 
-Remember that only false postiives are at play here becuase they cant give false negatives. If the number truly is prime, they will always return true.
+Remember that only false positives are at play here because they cant give false negatives. If the number truly is prime, they will always return true.
 
-For Fermat, becuase its implemented assuming primality, which means that all 2 to N-1 would be coprime to N, it samples randomly. This means that for Carmichael numbers like 561, they are not guarented to pass that implementation of the fermat because the function is not always guarenteed to pick numbers that are coprime to it.
+For Fermat, because its implemented assuming primality, which means that all 2 to N-1 would be coprime to N, it samples randomly. This means that for Carmichael numbers like 561, they are not guaranteed to pass that implementation of the fermat because the function is not always guaranteed to pick numbers that are coprime to it.
 
-We then need to examine what the odds are that no coprimes are chosen for the sample size k = 20. A quick search reveals that 320 numbers that are less than 561 are coprime to it. The probability of selecting a random noncoprime number is then 320 / 560 = .57. This means that there is a .57 chance that the sample selects a number that is not guarenteed to pass. Of course that doesn't necessarily mean it can't pass either.
+We then need to examine what the odds are that no coprimes are chosen for the sample size k = 20. A quick search reveals that 320 numbers that are less than 561 are coprime to it. The probability of selecting a random noncoprime number is then 320 / 560 = .57. This means that there is a .57 chance that the sample selects a number that is not guaranteed to pass. Of course that doesn't necessarily mean it can't pass either.
 
 I ran a test on the probability that either tests would falsely say that the carmichael number 561 was a prime number. At k = 20, it took the fermat test 181238 trials before it claimed that it was a prime number. That's pretty good, but still probably too high considering how many secure credit card transactions are taking place on the internet every day. 
 
-As for the Miller-Rabin test, I had it going for a while and I convinced myself that it would take an astronnomically long time for it to fool the test. Its a lot better.
+As for the Miller-Rabin test, I had it going for a while and I convinced myself that it would take an astronomically long time for it to fool the test. Its a lot better.
 
-My testing was also proven correct by the math itself. Aside from carmichaels, remember that for fermat, there is a .5 chance with k=1 that a number is actually prime, with k = 20 your probabiltiy of it being composite 1/2^20, which is a small big number. But will miller rabin, its 1/4^20 becuase they proved that with composites, the successive squaring wont pass the test for at least 3/4 of the values of a. That is extremely significant.
+My testing was also proven correct by the math itself. Aside from carmichaels, remember that for fermat, there is a .5 chance with k=1 that a number is actually prime, with k = 20 your probability of it being composite 1/2^20, which is a small big number. But will miller rabin, its 1/4^20 because they proved that with composites, the successive squaring wont pass the test for at least 3/4 of the values of a. That is extremely significant.
 
 ## Project Review
 
-I did the project review with Cecily Black. Here emperical data for generating primes was also pretty similar in the sense that the last call to a 2048 bit integer took like a full minute and a half to compute. We had both implemented all the project tiers.
+I did the project review with Cecily Black. Here empirical data for generating primes was also pretty similar in the sense that the last call to a 2048 bit integer took like a full minute and a half to compute. We had both implemented all the project tiers.
 
-Her Emperical data pretty much cemented that they were likely the real time complexities for these algorithms becuase they aligned with mine.
+Her empirical data pretty much cemented that they were likely the real time complexities for these algorithms because they aligned with mine.
 
 We also talked about different ways on implementing fermat's theorem. She was using a bitwise OR operator to use it to flip the bits on a number to make sure it was always an odd number. I'd never thought about using that before. 
 
